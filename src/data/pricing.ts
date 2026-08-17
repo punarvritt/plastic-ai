@@ -1,28 +1,72 @@
 import { CapacityTierDetail, PlanDetail, PricingForTier, CapacityTier, SubscriptionPlanId, RegistrationType } from '../types/registration';
 
-export const CAPACITY_TIERS: CapacityTierDetail[] = [
+export const BRAND_CAPACITY_TIERS: CapacityTierDetail[] = [
   {
     id: 'tier1',
     title: 'Tier 1',
-    range: '0–149 MT/year',
-    description: 'Ideal for small processors, local recyclers, and regional brand aggregators starting EPR tracking.',
-    recommendedFor: 'Emerging Units & Local Aggregators',
+    range: '< 100 MT/year',
+    description: 'Ideal for emerging brand owners, regional distributors, and small PIBO aggregators.',
+    recommendedFor: 'Emerging Brands & Regional PIBOs',
   },
   {
     id: 'tier2',
     title: 'Tier 2',
-    range: '150–399 MT/year',
-    description: 'Designed for growing recycling facilities and mid-sized FMCG brands with steady monthly volumes.',
-    recommendedFor: 'Mid-sized Processors & Brands',
+    range: '100–500 MT/year',
+    description: 'Designed for growing FMCG and packaging brands with multi-region compliance needs.',
+    recommendedFor: 'Mid-Sized Brands & Distributors',
   },
   {
     id: 'tier3',
     title: 'Tier 3',
-    range: '400+ MT/year',
-    description: 'High-volume recycling hubs and large national brand owners managing multi-state plastic packaging.',
-    recommendedFor: 'Large Enterprise Units & PIBOs',
-  }
+    range: '500–2,000 MT/year',
+    description: 'High-volume national brands managing large annual packaging EPR targets.',
+    recommendedFor: 'Large National Brands & Producers',
+  },
+  {
+    id: 'tier4',
+    title: 'Tier 4',
+    range: '> 2,000 MT/year',
+    description: 'Enterprise conglomerate brand owners requiring custom enterprise compliance automation.',
+    recommendedFor: 'Multinational Enterprise PIBOs',
+  },
 ];
+
+export const RECYCLER_CAPACITY_TIERS: CapacityTierDetail[] = [
+  {
+    id: 'tier1',
+    title: 'Tier 1',
+    range: '< 100 MT/year',
+    description: 'Ideal for local waste aggregators and small certified recycling units.',
+    recommendedFor: 'Local Aggregators & Small Recyclers',
+  },
+  {
+    id: 'tier2',
+    title: 'Tier 2',
+    range: '100–500 MT/year',
+    description: 'Designed for regional plastic/metal recycling facilities with steady monthly processing.',
+    recommendedFor: 'Regional Processing Facilities',
+  },
+  {
+    id: 'tier3',
+    title: 'Tier 3',
+    range: '500–2,000 MT/year',
+    description: 'High-capacity industrial recyclers issuing large volumes of EPR credit certificates.',
+    recommendedFor: 'Industrial Recycling Hubs',
+  },
+  {
+    id: 'tier4',
+    title: 'Tier 4',
+    range: '> 2,000 MT/year',
+    description: 'Large multi-facility recycling enterprises requiring customized API integration.',
+    recommendedFor: 'Enterprise Recycling Networks',
+  },
+];
+
+export const CAPACITY_TIERS: CapacityTierDetail[] = BRAND_CAPACITY_TIERS;
+
+export function getCapacityTiers(registrationType?: RegistrationType) {
+  return registrationType === 'recycler' ? RECYCLER_CAPACITY_TIERS : BRAND_CAPACITY_TIERS;
+}
 
 export const PRICING_MATRIX: Record<CapacityTier, PricingForTier> = {
   tier1: {

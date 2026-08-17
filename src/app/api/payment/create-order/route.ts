@@ -13,9 +13,11 @@ const razorpay = new Razorpay({
 
 export interface CreateOrderRequest {
   capacityTier: CapacityTier;
+  plasticCapacityTier?: CapacityTier;
+  metalCapacityTier?: CapacityTier;
   subscriptionPlan: SubscriptionPlanId;
   registrationType: 'brand' | 'recycler';
-  materialCategory: 'plastic' | 'metal';
+  materialCategory: 'plastic' | 'metal' | 'plastic_and_metal';
   promoCode?: string;
   companyInfo: {
     companyName: string;
@@ -49,14 +51,22 @@ export async function POST(req: NextRequest) {
 
     // 2. Parse body
     const body: CreateOrderRequest = await req.json();
-    const { capacityTier, subscriptionPlan, registrationType, materialCategory, companyInfo, promoCode } = body;
+    const { capacityTier, plasticCapacityTier, metalCapacityTier, subscriptionPlan, registrationType, materialCategory, companyInfo, promoCode } = body;
 
-    if (!capacityTier || !subscriptionPlan || !companyInfo?.companyName) {
+    if ((!capacityTier && !plasticCapacityTier) || !subscriptionPlan || !companyInfo?.companyName) {
       return NextResponse.json({ error: 'Missing required fields.' }, { status: 400 });
     }
 
-    // 3. Resolve base amount
-    const originalAmount = PRICE_AMOUNTS[capacityTier]?.[subscriptionPlan];
+    // 3. Resolve base amount (if dual material, calculate from selected plastic and metal tiers)
+    let originalAmount = 0;
+    if (materialCategory === 'plastic_and_metal') {
+      const plasticAmt = PRICE_AMOUNTS[plasticCapacityTier || capacityTier || 'tier2']?.[subscriptionPlan] || 0;
+      const metalAmt = PRICE_AMOUNTS[metalCapacityTier || capacityTier || 'tier2']?.[subscriptionPlan] || 0;
+      originalAmount = Math.max(plasticAmt, metalAmt) + Math.min(plasticAmt, metalAmt) / 2; // combined package pricing
+    } else {
+      originalAmount = PRICE_AMOUNTS[capacityTier]?.[subscriptionPlan] || 0;
+    }
+
     if (!originalAmount || originalAmount <= 0) {
       return NextResponse.json(
         { error: 'Selected plan requires a custom quote. Please contact sales.' },

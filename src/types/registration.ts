@@ -1,6 +1,8 @@
+export type BrandSubRole = 'brand_admin' | 'brand_employee';
+
 export type RegistrationType = 'brand' | 'recycler';
 
-export type MaterialCategory = 'plastic' | 'metal';
+export type MaterialCategory = 'plastic' | 'metal' | 'plastic_and_metal';
 
 export type CapacityTier = 'tier1' | 'tier2' | 'tier3' | 'tier4';
 
@@ -35,10 +37,13 @@ export interface UploadedDocument {
 
 export interface RegistrationData {
   registrationType: RegistrationType;
+  brandSubRole?: BrandSubRole;
   materialCategory: MaterialCategory;
   companyInfo: CompanyInfo;
   documents: Record<string, UploadedDocument | null>;
   capacityTier: CapacityTier;
+  plasticCapacityTier?: CapacityTier;
+  metalCapacityTier?: CapacityTier;
   subscriptionPlan: SubscriptionPlanId;
 }
 

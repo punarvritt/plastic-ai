@@ -15,6 +15,7 @@ import { createClient } from '@/utils/supabase/client';
 export const BrandLoginPage: React.FC = () => {
   const router = useRouter();
 
+  const [loginRole, setLoginRole] = useState<'brand_admin' | 'brand_employee'>('brand_admin');
   const [formData, setFormData] = useState({
     email: '',
     password: '',
@@ -69,7 +70,7 @@ export const BrandLoginPage: React.FC = () => {
         setErrors({ form: 'Invalid email or password. Please try again.' });
         return;
       }
-      router.push('/brand/dashboard');
+      router.push(`/brand/dashboard?role=${loginRole}`);
       router.refresh();
     } catch {
       setErrors({ form: 'Something went wrong. Please try again.' });
@@ -86,14 +87,40 @@ export const BrandLoginPage: React.FC = () => {
     >
       <div className="max-w-md mx-auto w-full">
         <Card variant="default" padding="lg" className="shadow-md">
-          <div className="flex items-center gap-3 mb-6 pb-4 border-b border-slate-100">
+          <div className="flex items-center gap-3 mb-5 pb-4 border-b border-slate-100">
             <div className="w-10 h-10 rounded-xl bg-blue-100 text-blue-700 flex items-center justify-center font-bold">
               <Building2 className="w-5 h-5" />
             </div>
             <div>
-              <h2 className="text-lg font-bold text-slate-900">Brand Login</h2>
+              <h2 className="text-lg font-bold text-slate-900">Brand Portal Login</h2>
               <p className="text-xs text-slate-500">Sign in to your corporate account</p>
             </div>
+          </div>
+
+          {/* Role selector tabs */}
+          <div className="bg-slate-100 p-1 rounded-xl flex gap-1 mb-5">
+            <button
+              type="button"
+              onClick={() => setLoginRole('brand_admin')}
+              className={`flex-1 py-2 text-xs font-bold rounded-lg transition-all cursor-pointer ${
+                loginRole === 'brand_admin'
+                  ? 'bg-white text-emerald-700 shadow-xs'
+                  : 'text-slate-600 hover:text-slate-900'
+              }`}
+            >
+              Brand Admin
+            </button>
+            <button
+              type="button"
+              onClick={() => setLoginRole('brand_employee')}
+              className={`flex-1 py-2 text-xs font-bold rounded-lg transition-all cursor-pointer ${
+                loginRole === 'brand_employee'
+                  ? 'bg-white text-emerald-700 shadow-xs'
+                  : 'text-slate-600 hover:text-slate-900'
+              }`}
+            >
+              Brand Employee
+            </button>
           </div>
 
           <form onSubmit={handleLogin} className="space-y-5">

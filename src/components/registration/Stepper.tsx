@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { motion } from 'motion/react';
-import { Check, Package, Building2, FileText, Scale, CreditCard, ClipboardCheck } from 'lucide-react';
+import { Check, User, Recycle, Building2, FileText, Scale, CreditCard, ClipboardCheck } from 'lucide-react';
 
 interface StepperProps {
   currentStep: number;
@@ -11,12 +11,13 @@ interface StepperProps {
 }
 
 const STEP_ITEMS = [
-  { step: 1, label: 'Material', title: 'Select Material', icon: Package },
+  { step: 1, label: 'Type', title: 'Choose Type & Role', icon: User },
   { step: 2, label: 'Company', title: 'Company Details', icon: Building2 },
   { step: 3, label: 'Documents', title: 'Upload Documents', icon: FileText },
-  { step: 4, label: 'Capacity', title: 'Annual Capacity', icon: Scale },
-  { step: 5, label: 'Plan', title: 'Subscription Plan', icon: CreditCard },
-  { step: 6, label: 'Summary', title: 'Review & Submit', icon: ClipboardCheck },
+  { step: 4, label: 'Material', title: 'Select Material', icon: Recycle },
+  { step: 5, label: 'Capacity', title: 'Annual Capacity', icon: Scale },
+  { step: 6, label: 'Plan', title: 'Subscription Plan', icon: CreditCard },
+  { step: 7, label: 'Summary', title: 'Review & Submit', icon: ClipboardCheck },
 ];
 
 export const Stepper: React.FC<StepperProps> = ({ currentStep, totalSteps, onStepClick }) => {

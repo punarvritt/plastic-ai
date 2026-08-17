@@ -100,13 +100,21 @@ export const SummaryCard: React.FC<SummaryCardProps> = ({
             <div>
               <span className="text-xs text-slate-400 block font-medium">Account Type</span>
               <span className="text-base font-extrabold text-[#0F172A]">
-                {isBrand ? 'Brand Owner / PIBO' : 'Plastic Recycler / Aggregator'}
+                {isBrand
+                  ? data.brandSubRole === 'brand_employee'
+                    ? 'Brand Owner / PIBO (Brand Employee)'
+                    : 'Brand Owner / PIBO (Brand Admin)'
+                  : 'Plastic Recycler / Aggregator'}
               </span>
             </div>
             <div>
               <span className="text-xs text-slate-400 block font-medium">Primary Material Stream</span>
-              <span className="text-base font-extrabold text-[#0F172A] capitalize">
-                {data.materialCategory} Circularity
+              <span className="text-base font-extrabold text-[#0F172A]">
+                {data.materialCategory === 'plastic_and_metal'
+                  ? 'Plastic & Metal Circularity'
+                  : data.materialCategory === 'metal'
+                  ? 'Metal Circularity'
+                  : 'Plastic Circularity'}
               </span>
             </div>
           </div>
@@ -125,9 +133,16 @@ export const SummaryCard: React.FC<SummaryCardProps> = ({
           <div className="space-y-3 mb-5">
             <div>
               <span className="text-xs text-slate-400 block font-medium">Annual Tonnage Tier</span>
-              <span className="text-base font-extrabold text-[#0F172A]">
-                {tierInfo.title} ({tierInfo.range})
-              </span>
+              {data.materialCategory === 'plastic_and_metal' ? (
+                <div className="text-sm font-extrabold text-[#0F172A] space-y-0.5">
+                  <div>Plastic: <span className="text-[#0F766E]">{CAPACITY_TIERS.find((t) => t.id === (data.plasticCapacityTier || 'tier2'))?.range}</span></div>
+                  <div>Metal: <span className="text-[#0F766E]">{CAPACITY_TIERS.find((t) => t.id === (data.metalCapacityTier || 'tier2'))?.range}</span></div>
+                </div>
+              ) : (
+                <span className="text-base font-extrabold text-[#0F172A]">
+                  {tierInfo.title} ({tierInfo.range})
+                </span>
+              )}
             </div>
             <div>
               <span className="text-xs text-slate-400 block font-medium">Selected Plan</span>

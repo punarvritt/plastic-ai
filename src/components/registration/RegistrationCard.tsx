@@ -3,13 +3,16 @@
 import React from 'react';
 import { motion } from 'motion/react';
 import { Building2, Factory, CheckCircle2, ArrowRight } from 'lucide-react';
-import { RegistrationType } from '../../types/registration';
+import { BrandSubRole, RegistrationType } from '../../types/registration';
+import { UserCheck, Shield } from 'lucide-react';
 
 interface RegistrationCardProps {
   type: RegistrationType;
   selected: boolean;
   onSelect: (type: RegistrationType) => void;
   onContinue: () => void;
+  brandSubRole?: BrandSubRole;
+  onSelectBrandSubRole?: (role: BrandSubRole) => void;
 }
 
 export const RegistrationCard: React.FC<RegistrationCardProps> = ({
@@ -17,6 +20,8 @@ export const RegistrationCard: React.FC<RegistrationCardProps> = ({
   selected,
   onSelect,
   onContinue,
+  brandSubRole = 'brand_admin',
+  onSelectBrandSubRole,
 }) => {
   const isBrand = type === 'brand';
 
@@ -97,6 +102,50 @@ export const RegistrationCard: React.FC<RegistrationCardProps> = ({
         <p className="text-sm text-slate-600 leading-relaxed mb-6 font-normal">
           {description}
         </p>
+
+        {/* Sub-Role Selector for Brand */}
+        {isBrand && (
+          <div className="border-t border-[#D6E8DE] pt-4 mb-6">
+            <span className="text-xs font-bold uppercase tracking-wider text-slate-500 block mb-2.5">
+              Select Your Brand Role
+            </span>
+            <div className="grid grid-cols-2 gap-2">
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onSelect('brand');
+                  if (onSelectBrandSubRole) onSelectBrandSubRole('brand_admin');
+                }}
+                className={`py-2 px-3 rounded-xl border text-xs font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer ${
+                  brandSubRole === 'brand_admin'
+                    ? 'bg-[#0F766E] text-white border-[#0F766E] shadow-xs'
+                    : 'bg-slate-50 text-slate-700 border-slate-200 hover:bg-slate-100'
+                }`}
+              >
+                <Shield className="w-3.5 h-3.5" />
+                <span>Brand Admin</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onSelect('brand');
+                  if (onSelectBrandSubRole) onSelectBrandSubRole('brand_employee');
+                }}
+                className={`py-2 px-3 rounded-xl border text-xs font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer ${
+                  brandSubRole === 'brand_employee'
+                    ? 'bg-[#0F766E] text-white border-[#0F766E] shadow-xs'
+                    : 'bg-slate-50 text-slate-700 border-slate-200 hover:bg-slate-100'
+                }`}
+              >
+                <UserCheck className="w-3.5 h-3.5" />
+                <span>Brand Employee</span>
+              </button>
+            </div>
+          </div>
+        )}
 
         {/* Benefits List */}
         <div className="border-t border-[#D6E8DE] pt-5 mb-8">

@@ -31,12 +31,13 @@ interface RegistrationWizardProps {
 
 const STEP_TITLES = [
   'Create Your Account',                  // 1
-  'Choose Primary Material Category',      // 2
+  'Choose Registration Type & Role',      // 2
   'Company Information & Identification', // 3
   'Upload Required Compliance Documents', // 4
-  'Select Annual Processing Capacity',     // 5
-  'Select Subscription Plan',              // 6
-  'Registration Summary & Submission',     // 7
+  'Choose Primary Material Category',      // 5
+  'Select Annual Processing Capacity',     // 6
+  'Select Subscription Plan',              // 7
+  'Registration Summary & Submission',     // 8
 ];
 
 export const RegistrationWizard: React.FC<RegistrationWizardProps> = ({
@@ -53,8 +54,8 @@ export const RegistrationWizard: React.FC<RegistrationWizardProps> = ({
     setAccountEmail, setAccountPassword, setAccountConfirm,
     appliedPromoCode, promoDiscountAmount, promoFinalAmount, promoOriginalAmount,
     applyPromoCode, removePromoCode,
-    setRegistrationType, setMaterialCategory, updateCompanyInfo,
-    setCapacityTier, setSubscriptionPlan,
+    setRegistrationType, setBrandSubRole, setMaterialCategory, updateCompanyInfo,
+    setCapacityTier, setPlasticCapacityTier, setMetalCapacityTier, setSubscriptionPlan,
     uploadDocument, removeDocument,
     nextStep, prevStep, goToStep,
     saveProgress, submitRegistration, resetWizard,
@@ -234,18 +235,22 @@ export const RegistrationWizard: React.FC<RegistrationWizardProps> = ({
                 </div>
               )}
 
-              {/* ── STEP 2: Material Category ─────────────────────────────── */}
+              {/* ── STEP 2: Registration Type & Role ──────────────────────── */}
               {step === 2 && (
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 max-w-3xl mx-auto">
-                  <MaterialCard
-                    material="plastic"
-                    selected={data.materialCategory === 'plastic'}
-                    onSelect={setMaterialCategory}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8">
+                  <RegistrationCard
+                    type="brand"
+                    selected={data.registrationType === 'brand'}
+                    onSelect={setRegistrationType}
+                    onContinue={nextStep}
+                    brandSubRole={data.brandSubRole}
+                    onSelectBrandSubRole={setBrandSubRole}
                   />
-                  <MaterialCard
-                    material="metal"
-                    selected={data.materialCategory === 'metal'}
-                    onSelect={setMaterialCategory}
+                  <RegistrationCard
+                    type="recycler"
+                    selected={data.registrationType === 'recycler'}
+                    onSelect={setRegistrationType}
+                    onContinue={nextStep}
                   />
                 </div>
               )}
@@ -285,13 +290,43 @@ export const RegistrationWizard: React.FC<RegistrationWizardProps> = ({
                 </div>
               )}
 
-              {/* ── STEP 5: Capacity ──────────────────────────────────────── */}
+              {/* ── STEP 5: Material Category ─────────────────────────────── */}
               {step === 5 && (
-                <CapacityCard selectedTier={data.capacityTier} onSelect={setCapacityTier} />
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-5 max-w-5xl mx-auto">
+                  <MaterialCard
+                    material="plastic"
+                    selected={data.materialCategory === 'plastic'}
+                    onSelect={setMaterialCategory}
+                  />
+                  <MaterialCard
+                    material="metal"
+                    selected={data.materialCategory === 'metal'}
+                    onSelect={setMaterialCategory}
+                  />
+                  <MaterialCard
+                    material="plastic_and_metal"
+                    selected={data.materialCategory === 'plastic_and_metal'}
+                    onSelect={setMaterialCategory}
+                  />
+                </div>
               )}
 
-              {/* ── STEP 6: Plan ─────────────────────────────────────────── */}
+              {/* ── STEP 6: Capacity Tier ─────────────────────────────────── */}
               {step === 6 && (
+                <CapacityCard
+                  registrationType={data.registrationType}
+                  materialCategory={data.materialCategory}
+                  selectedTier={data.capacityTier}
+                  onSelect={setCapacityTier}
+                  plasticTier={data.plasticCapacityTier}
+                  metalTier={data.metalCapacityTier}
+                  onSelectPlasticTier={setPlasticCapacityTier}
+                  onSelectMetalTier={setMetalCapacityTier}
+                />
+              )}
+
+              {/* ── STEP 7: Subscription Plan ────────────────────────────── */}
+              {step === 7 && (
                 <PricingCard
                   capacityTier={data.capacityTier}
                   selectedPlan={data.subscriptionPlan}
@@ -299,11 +334,11 @@ export const RegistrationWizard: React.FC<RegistrationWizardProps> = ({
                 />
               )}
 
-              {/* ── STEP 7: Summary + Payment ─────────────────────────────── */}
-              {step === 7 && (
+              {/* ── STEP 8: Summary + Payment ─────────────────────────────── */}
+              {step === 8 && (
                 <SummaryCard
                   data={data}
-                  onGoToStep={(s) => goToStep(s + 1)} // SummaryCard uses 1-based stepper indices (1=Material, 2=Company, 3=Docs...)
+                  onGoToStep={(s) => goToStep(s + 1)}
                   appliedPromoCode={appliedPromoCode}
                   promoDiscountAmount={promoDiscountAmount}
                   promoFinalAmount={promoFinalAmount}
@@ -318,7 +353,7 @@ export const RegistrationWizard: React.FC<RegistrationWizardProps> = ({
 
         {/* Footer */}
         <div className="sticky bottom-0 z-20 border-t border-[#D6E8DE] bg-white px-4 sm:px-8 py-3.5 sm:py-4 flex flex-col gap-2 shadow-md sm:shadow-none">
-          {step === 7 && paymentError && (
+          {step === 8 && paymentError && (
             <div className="flex items-start gap-2.5 p-3 rounded-xl bg-red-50 border border-red-200 text-red-700 text-xs font-semibold">
               <AlertCircle className="w-4 h-4 mt-0.5 shrink-0" />
               <span>{paymentError}</span>

@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { motion } from 'motion/react';
-import { Recycle, Anvil, CheckCircle2 } from 'lucide-react';
+import { Recycle, Anvil, Layers, CheckCircle2 } from 'lucide-react';
 import { MaterialCategory } from '../../types/registration';
 
 interface MaterialCardProps {
@@ -17,17 +17,28 @@ export const MaterialCard: React.FC<MaterialCardProps> = ({
   onSelect,
 }) => {
   const isPlastic = material === 'plastic';
+  const isMetal = material === 'metal';
+  const isBoth = material === 'plastic_and_metal';
 
-  const title = isPlastic ? 'Plastic Materials' : 'Metal Materials';
+  const title = isPlastic
+    ? 'Plastic Materials'
+    : isMetal
+    ? 'Metal Materials'
+    : 'Plastic & Metal';
+
   const subtitle = isPlastic
     ? 'PET, HDPE, PP, LDPE, MLP & Flexible Plastics'
-    : 'Aluminum, Copper, Ferrous & Non-Ferrous Scrap';
+    : isMetal
+    ? 'Aluminum, Copper, Ferrous & Non-Ferrous Scrap'
+    : 'Combined Plastic & Metal Packaging Streams';
 
   const description = isPlastic
     ? 'Comprehensive recycling & EPR fulfillment for rigid, flexible, multi-layered, and compostable plastic waste streams.'
-    : 'Industrial scrap tracking, ingot certifications, and metallic circularity documentation for metal recyclers.';
+    : isMetal
+    ? 'Industrial scrap tracking, ingot certifications, and metallic circularity documentation for metal recyclers.'
+    : 'Complete dual-material EPR tracking & capacity management for entities processing or purchasing both plastic and metal packaging.';
 
-  const Icon = isPlastic ? Recycle : Anvil;
+  const Icon = isPlastic ? Recycle : isMetal ? Anvil : Layers;
 
   return (
     <motion.div
